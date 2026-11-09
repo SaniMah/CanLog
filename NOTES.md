@@ -230,3 +230,41 @@ the detector and scorer are ready to run on it once that data is loaded.
 
 **Next (Step 6):** Streamlit dashboard (overview, anomaly timeline, ID
 drill-down, anomaly table with CSV/Excel download).
+
+---
+
+## Step 6 — Dashboard (10 Nov 2026)
+
+**Goal:** a Streamlit app that presents the stored results so a non-technical
+reader can see what's wrong without touching SQL.
+
+**Demo data first:** the clean capture has no anomalies to show, so
+`run_inject_demo.py` creates a second capture (`log_id=2`,
+`2_brakes_INJECTED_demo.log`) — the clean brakes frames with 24 known dropouts
+injected, loaded as its own log with its detected anomalies stored. It is
+clearly labelled "injected faults - demo" so it's never mistaken for real data.
+
+**`app/dashboard.py` — reads everything from PostgreSQL, four tabs:**
+- **Overview** — metric cards (frames, IDs, duration, bus rate, anomaly count),
+  anomalies-by-type bar chart, and bus traffic over time.
+- **Anomaly timeline** — scatter of every anomaly by CAN ID (y) over time (x),
+  coloured by type; shows *when* and *where* faults happened.
+- **ID drill-down** — pick a CAN ID, see its rate/median and an inter-frame-gap
+  plot with flagged dropouts shaded red.
+- **Anomaly table** — the full list, downloadable as **CSV or Excel**
+  (`st.download_button` + openpyxl).
+
+Caching (`st.cache_data` / `st.cache_resource`) keeps it responsive; the DB
+connection reuses `src/db.get_engine()`, so the app stays thin.
+
+**Run it:** `streamlit run app/dashboard.py` (config in `.claude/launch.json`).
+Verified end-to-end in the browser: selecting the demo capture shows all 24
+dropouts across the four views, and ID 217's ~520 ms injected gap appears as a
+red band exactly where it was injected.
+
+**Deployment (optional, can be cut):** ready for Streamlit Community Cloud — it
+needs the repo on GitHub and `DATABASE_URL` set as a Streamlit secret. If time
+is short, a screen recording stands in for a live deploy.
+
+**Next (Step 7):** AI report — summarise the anomalies + evaluation to JSON and
+have a local LLM (Ollama) write a structured test report from only those numbers.
