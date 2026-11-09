@@ -111,6 +111,19 @@ def read_candid_meta(meta_path) -> dict:
     return info
 
 
+def read_frames(engine: Engine, log_id: int) -> pd.DataFrame:
+    """Read a log's frames back from the database for analysis.
+
+    Returns columns `timestamp, can_id, data, dlc` (ts is aliased to
+    `timestamp` so it matches what profile.py / detect.py expect).
+    """
+    sql = text(
+        "SELECT ts AS timestamp, can_id, data, dlc "
+        "FROM can_frame WHERE log_id = :log_id ORDER BY ts"
+    )
+    return pd.read_sql_query(sql, engine, params={"log_id": log_id})
+
+
 def insert_log_file(engine: Engine, filename: str, meta: dict, frame_count: int) -> int:
     """Insert one log_file row and return its new ``log_id``."""
     sql = text(

@@ -161,3 +161,72 @@ loaded; it comes into its own in Step 5 when we add more logs.
 **Next (Step 4):** detection rules writing to the `anomaly` table — dropout
 (with the bursty-ID fix so `3D2` isn't flagged), timing drift, unknown ID,
 missing ID.
+
+---
+
+## Step 4 — Detection (10 Nov 2026)
+
+**Goal:** turn the findings into rules that write to the `anomaly` table, and
+fix the bursty-ID false positive from Step 1.
+
+**`src/detect.py` — four rules:**
+- **`detect_dropouts`** — the important one. A gap is a dropout if it beats
+  `threshold = max(k_med x median_period, k_p99 x p99_period)`.
+  - For a *steady* ID the median term wins → same as the simple "gap > 3x median".
+  - For a *bursty* ID (3D2) the p99 term wins: p99 ≈ its routine 210 ms gap, so
+    the bar sits above those and they're no longer flagged. A `use_p99=False`
+    switch reproduces the naive rule (used in Step 5 to prove the fix's value).
+- **`detect_timing_drift`** — median period of the first third vs last third of
+  an ID's frames; flag a change > 25%.
+- **`detect_unknown_ids` / `detect_missing_ids`** — compare the capture's IDs to
+  a baseline set (unknown = present but not in baseline; missing = baseline but
+  absent). With one log, baseline = its own IDs, so both are 0; they matter when
+  comparing captures.
+
+**Result on the clean brakes capture:** naive dropout rule = **202 flags, all on
+3D2** (false positives); fixed rule = **0 flags**. The capture genuinely has no
+dropouts, so 0 is the correct answer — the fix removed the noise without hiding
+anything.
+
+---
+
+## Step 5 — Evaluation (10 Nov 2026)
+
+**Goal:** prove the detector with numbers. The brakes capture is clean, so we
+*inject* known dropouts (remove windows of frames) and measure how well they're
+recovered — precision and recall.
+
+**`src/evaluate.py` + `run_step5.py`:**
+- Inject 24 dropouts (durations 0.2–1.2 s) into steady, periodic IDs; record
+  exact ground-truth intervals.
+- Match a detected gap to an injected one by **interval overlap** on the same ID.
+  `precision` = detections that hit a real dropout ÷ all detections;
+  `recall` = injected dropouts found ÷ all injected.
+- Sweep `k` and compare the **fixed** rule vs the **naive** rule.
+
+**Results (see `reports/figures/step5_pr_vs_k.png`, `reports/eval_sweep.csv`):**
+
+| k | fixed precision | fixed recall | naive precision | naive FPs |
+|---|----|----|----|----|
+| 3 | **1.00** | **1.00** | **0.11** | 202 |
+| 8 | 1.00 | 0.96 | 1.00 | 0 |
+| 32 | 1.00 | 0.38 | 1.00 | 0 |
+
+- **The fix is worth it:** at a low, high-recall k=3, the naive rule's precision
+  collapses to 0.11 (buried in 3D2 false positives); the fixed rule holds
+  precision 1.00 **and** recall 1.00.
+- **Trade-off:** raising k only *loses recall* on the shortest dropouts (the
+  fixed rule's precision never drops because there were no false positives to
+  begin with). The naive rule only reaches precision 1.00 at k≥8 — by which
+  point it is also missing real faults.
+- **Chosen k = 3.** Any k in 1.5–6 gives perfect precision & recall here; k=3 is
+  the sensible default — a safety margin above normal timing jitter while still
+  catching every injected dropout.
+
+**Honest limits:** evaluation uses injected faults on one clean capture, which
+gives exact ground truth but is synthetic. A stronger future test is the **ROAD**
+dataset's real "suspension" attacks (frames actually removed on a real vehicle);
+the detector and scorer are ready to run on it once that data is loaded.
+
+**Next (Step 6):** Streamlit dashboard (overview, anomaly timeline, ID
+drill-down, anomaly table with CSV/Excel download).
