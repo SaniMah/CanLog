@@ -1,0 +1,37 @@
+# CAN Log Analyser — Python dependencies
+# Install into a virtual environment:
+#   python -m venv .venv
+#   .venv\Scripts\Activate.ps1        (Windows PowerShell)
+#   pip install -r requirements.txt
+
+# --- Core data handling ---
+pandas
+numpy
+
+# --- Database (PostgreSQL via SQLAlchemy) ---
+SQLAlchemy
+psycopg2-binary          # PostgreSQL driver
+python-dotenv            # loads DATABASE_URL / API keys from .env
+
+# --- Dashboard ---
+streamlit
+
+# --- Plotting (Step 1 timelines, notebook charts) ---
+matplotlib
+
+# --- Excel/CSV export (Step 6 anomaly download) ---
+openpyxl
+
+# --- Notebooks (Step 3 analysis) ---
+jupyter
+ipykernel
+
+# --- Testing ---
+pytest
+
+# --- LLM API (Step 7 report) ---
+anthropic
+
+# --- Optional / only if ahead of schedule ---
+# scikit-learn           # Isolation Forest anomaly detection
+# cantools               # DBC signal decoding
