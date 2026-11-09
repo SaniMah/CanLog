@@ -268,3 +268,42 @@ is short, a screen recording stands in for a live deploy.
 
 **Next (Step 7):** AI report — summarise the anomalies + evaluation to JSON and
 have a local LLM (Ollama) write a structured test report from only those numbers.
+
+---
+
+## Step 7 — AI report (10 Nov 2026)
+
+**Goal:** turn the computed numbers into a written test report with an LLM —
+running **locally** (Ollama), with no API key or cloud cost, as Sunny wanted.
+
+**`src/report.py` — three parts:**
+1. **`gather_facts`** — pulls a capture's numbers from the DB (traffic totals,
+   anomaly counts by type, the five biggest dropouts) plus the Step 5 validation
+   (precision/recall at k=3) into one plain dict. *Only numbers — no prose.*
+2. **`build_prompt`** — wraps the facts in a prompt that tells the model to use
+   **only** those numbers, invent nothing, start with `DRAFT - review before use`,
+   and fill fixed sections: Method, Results, Analysis, Conclusion, Next checks.
+3. **`generate_with_ollama`** — POSTs to a local Ollama server
+   (`localhost:11434`). A fast `ollama_available()` health-check (2 s) means that
+   if Ollama isn't running we skip straight to the fallback instead of hanging.
+
+**`render_fallback`** — a deterministic template that fills the same sections
+from the same facts, so a useful draft is produced **with or without** an LLM.
+`generate_report()` returns `(markdown, source)` where source is `ollama:<model>`
+or `template-fallback`.
+
+**Why local + numbers-only:** avoids cost and keeps data on the machine; and by
+feeding the model only pre-computed numbers (not raw logs) it can't hallucinate
+measurements — the worst it can do is reword true facts. Every report is marked
+a draft.
+
+**Where it runs:** `run_step7.py` (CLI, saves `reports/report_log<id>.md`) and a
+**"Generate report"** button on the dashboard's **AI report** tab. Verified in
+the browser: the button produces the draft report for the demo capture and
+cleanly reports that Ollama isn't installed yet.
+
+**To enable LLM prose (user, one-off):** install from https://ollama.com, then
+`ollama pull llama3.2`. No code change needed — the app detects it.
+
+**Next (Step 8):** pytest for the gap/detection logic (no gaps / one known gap /
+empty log), and write the README as a consulting case with screenshots.

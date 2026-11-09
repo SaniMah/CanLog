@@ -20,6 +20,7 @@ from sqlalchemy import text
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.db import get_engine  # noqa: E402
 from src.detect import detect_dropouts  # noqa: E402
+from src.report import generate_report  # noqa: E402
 
 st.set_page_config(page_title="CAN Log Analyser", page_icon="🚗", layout="wide")
 
@@ -106,8 +107,8 @@ profiles = load_profiles(log_id)
 t0 = float(frames["timestamp"].min())
 duration = float(frames["timestamp"].max()) - t0
 
-tab_overview, tab_timeline, tab_drill, tab_table = st.tabs(
-    ["Overview", "Anomaly timeline", "ID drill-down", "Anomaly table"]
+tab_overview, tab_timeline, tab_drill, tab_table, tab_report = st.tabs(
+    ["Overview", "Anomaly timeline", "ID drill-down", "Anomaly table", "AI report"]
 )
 
 # --------------------------------------------------------------------------- #
@@ -217,4 +218,27 @@ with tab_table:
             "⬇ Download Excel", to_excel_bytes(show),
             file_name=f"anomalies_log{log_id}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+
+
+# --------------------------------------------------------------------------- #
+# AI report
+# --------------------------------------------------------------------------- #
+with tab_report:
+    st.subheader("Generate a test report")
+    st.caption("Uses a local LLM (Ollama) if it is running, otherwise a built-in "
+               "template. Either way the report uses only the computed numbers "
+               "and is a draft to review before use.")
+    if st.button("Generate report", type="primary"):
+        with st.spinner("Writing report..."):
+            report_md, source = generate_report(engine(), log_id)
+        if source == "template-fallback":
+            st.info("Ollama not detected — used the built-in template. Install "
+                    "Ollama and run `ollama pull llama3.2` for LLM-written prose.")
+        else:
+            st.success(f"Written by local model ({source}).")
+        st.markdown(report_md)
+        st.download_button(
+            "⬇ Download report (Markdown)", report_md.encode(),
+            file_name=f"report_log{log_id}.md", mime="text/markdown",
         )
