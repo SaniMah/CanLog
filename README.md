@@ -7,9 +7,8 @@ structured test report. Validated with precision/recall against injected faults.
 
 > Built as a portfolio project by **Sanithma** (Mechatronics Engineering &
 > Computer Science, Monash University), drawing on hands-on CAN fault
-> investigation during an engineering internship. AI tools were used to help
-> revise the code and documentation; all logic and results were reviewed and
-> tested.
+> investigation during an engineering internship. AI tools were used as a
+> drafting and editing aid; the design, logic and results are the author's own.
 
 ---
 
@@ -154,6 +153,6 @@ log), the bursty-ID fix, timing drift, and the precision/recall scorer.
 
 ## AI assistance
 
-AI tools were used to help revise the code and documentation; all logic and
-results were reviewed and tested. The anomaly detector and evaluation are the
-author's own method.
+AI tools were used as a drafting and editing aid. The design decisions, the
+anomaly detector and its evaluation, and all results are the author's own, and
+were reviewed and tested.

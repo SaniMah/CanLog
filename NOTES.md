@@ -23,9 +23,9 @@ home, and make sure secrets/data can never be committed by accident.
   It also ignores Python caches (`__pycache__`), the virtual environment
   (`.venv/`) and editor junk.
 
-- **`.env.example`** - a committed *template* showing which secrets are needed
-  (`DATABASE_URL`, `ANTHROPIC_API_KEY`) without real values. Anyone cloning the
-  repo copies it to `.env` and fills in their own. The real `.env` is ignored.
+- **`.env.example`** - a committed *template* showing which settings are needed
+  (`DATABASE_URL`) without real values. Anyone cloning the repo copies it to
+  `.env` and fills in their own. The real `.env` is ignored.
 
 - **`requirements.txt`** - the exact Python packages the project needs, so the
   environment is reproducible with one `pip install -r requirements.txt`.

@@ -29,9 +29,8 @@ ipykernel
 # --- Testing ---
 pytest
 
-# --- LLM API (Step 7 report) ---
-anthropic
+# Step 7's report uses a local Ollama model over HTTP, so no package is needed.
 
-# --- Optional / only if ahead of schedule ---
+# --- Optional extras ---
 # scikit-learn           # Isolation Forest anomaly detection
 # cantools               # DBC signal decoding
