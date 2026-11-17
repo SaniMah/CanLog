@@ -1,4 +1,4 @@
-"""CAN Log Analyser — Streamlit dashboard.
+"""CAN Log Analyser - Streamlit dashboard.
 
 Views: Overview, Anomaly timeline, ID drill-down, and an Anomaly table with
 CSV / Excel download. Reads everything from the PostgreSQL database.
@@ -22,7 +22,7 @@ from src.db import get_engine  # noqa: E402
 from src.detect import detect_dropouts  # noqa: E402
 from src.report import generate_report  # noqa: E402
 
-st.set_page_config(page_title="CAN Log Analyser", page_icon="🚗", layout="wide")
+st.set_page_config(page_title="CAN Log Analyser", layout="wide")
 
 TYPE_COLORS = {
     "dropout": "#d00000",
@@ -84,9 +84,9 @@ def to_excel_bytes(df: pd.DataFrame) -> bytes:
 
 
 # --------------------------------------------------------------------------- #
-# Sidebar — pick a capture
+# Sidebar - pick a capture
 # --------------------------------------------------------------------------- #
-st.title("🚗 CAN Log Analyser")
+st.title("CAN Log Analyser")
 st.caption("Automated fault analysis for automotive CAN bus logs. "
            "Data: CANdid (CC BY 4.0).")
 
@@ -96,7 +96,7 @@ if logs.empty:
     st.stop()
 
 labels = {
-    row.log_id: f"#{row.log_id} — {row.filename} ({row.capture_type})"
+    row.log_id: f"#{row.log_id} - {row.filename} ({row.capture_type})"
     for row in logs.itertuples()
 }
 log_id = st.sidebar.selectbox("Capture", list(labels), format_func=labels.get)
@@ -128,7 +128,7 @@ with tab_overview:
         st.bar_chart(by_type)
     else:
         st.info("No anomalies stored for this capture. "
-                "(The clean capture has none — select the injected-faults demo.)")
+                "(The clean capture has none - select the injected-faults demo.)")
 
     st.subheader("Bus traffic over time (frames per 5 s)")
     rel = frames["timestamp"] - t0
@@ -191,7 +191,7 @@ with tab_drill:
             ax.axvspan(row.start_ts - t0, row.end_ts - t0, color="#d00000", alpha=0.25)
         ax.set_xlabel("time since start (s)")
         ax.set_ylabel("gap before frame (ms)")
-        ax.set_title(f"ID {pick} — inter-frame gaps (red = flagged dropout)")
+        ax.set_title(f"ID {pick} - inter-frame gaps (red = flagged dropout)")
         fig.tight_layout()
         st.pyplot(fig)
 
@@ -233,7 +233,7 @@ with tab_report:
         with st.spinner("Writing report..."):
             report_md, source = generate_report(engine(), log_id)
         if source == "template-fallback":
-            st.info("Ollama not detected — used the built-in template. Install "
+            st.info("Ollama not detected - used the built-in template. Install "
                     "Ollama and run `ollama pull llama3.2` for LLM-written prose.")
         else:
             st.success(f"Written by local model ({source}).")

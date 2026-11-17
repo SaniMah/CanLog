@@ -1,4 +1,4 @@
-"""Step 1 — evening test.
+"""Step 1 - evening test.
 
 Load one CANdid capture, learn the normal rate of each CAN ID, flag timing
 gaps bigger than 3x the median, and plot one ID's timeline with the gaps
@@ -51,7 +51,7 @@ def plot_id_timeline(df, can_id, k=K, out_path=None):
                label=f"threshold = {thresh:.1f} ms")
     ax.set_xlabel("time since capture start (s)")
     ax.set_ylabel("gap before frame (ms)")
-    ax.set_title(f"CAN ID {can_id} — inter-frame timing  "
+    ax.set_title(f"CAN ID {can_id} - inter-frame timing  "
                  f"({int(flagged.sum())} gaps flagged)")
     ax.legend(loc="upper right", fontsize=8)
     fig.tight_layout()

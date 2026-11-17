@@ -19,7 +19,7 @@ import pandas as pd
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
-# (timestamp) interface CANID#DATA   — DATA may be empty (e.g. remote frames).
+# (timestamp) interface CANID#DATA   - DATA may be empty (e.g. remote frames).
 _CANDUMP_RE = re.compile(
     r"^\((?P<ts>\d+\.\d+)\)\s+(?P<iface>\S+)\s+"
     r"(?P<can_id>[0-9A-Fa-f]+)#(?P<data>[0-9A-Fa-f]*)"
@@ -145,8 +145,8 @@ def insert_log_file(engine: Engine, filename: str, meta: dict, frame_count: int)
 def copy_frames(engine: Engine, log_id: int, df: pd.DataFrame) -> int:
     """Bulk-load frames into can_frame using PostgreSQL COPY.
 
-    COPY streams all rows in one pass — far faster than thousands of INSERTs
-    over the network. We build a tab-separated buffer in memory and hand it to
+    COPY streams all rows in one pass - far faster than thousands of INSERTs
+    over the network. A tab-separated buffer is built in memory and handed to
     psycopg2's ``copy_expert``. Returns the number of rows loaded.
     """
     buf = io.StringIO()

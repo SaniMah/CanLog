@@ -1,15 +1,15 @@
 -- ============================================================================
--- CAN Log Analyser — database schema (PostgreSQL)
+-- CAN Log Analyser - database schema (PostgreSQL)
 -- ============================================================================
--- Design notes (for FIT2094):
---   * Surrogate primary keys (SERIAL/BIGSERIAL) — stable, simple joins.
+-- Design notes:
+--   * Surrogate primary keys (SERIAL/BIGSERIAL) - stable, simple joins.
 --   * One parent table (log_file) and three children that reference it with
 --     FOREIGN KEYs + ON DELETE CASCADE, so deleting a log cleans up everything
 --     belonging to it. This keeps the data normalised (3NF): file-level facts
 --     (vehicle, duration) live once in log_file, not repeated on every frame.
 --   * CHECK constraints guard data quality (dlc 0-8, known anomaly types).
---   * A composite index matches our main access pattern (frames of one ID in
---     one log, in time order) — critical with ~180k rows per capture.
+--   * A composite index matches the main access pattern (frames of one ID in
+--     one log, in time order) - critical with ~180k rows per capture.
 -- Run order: this script drops children before parents so it can be re-run.
 -- ============================================================================
 
@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS can_frame  CASCADE;
 DROP TABLE IF EXISTS log_file   CASCADE;
 
 -- ---------------------------------------------------------------------------
--- log_file: one row per CAN capture we load (the "parent" of everything).
+-- log_file: one row per CAN capture loaded (the "parent" of everything).
 -- ---------------------------------------------------------------------------
 CREATE TABLE log_file (
     log_id         SERIAL       PRIMARY KEY,
@@ -49,7 +49,7 @@ CREATE TABLE can_frame (
     CONSTRAINT chk_dlc CHECK (dlc BETWEEN 0 AND 8)
 );
 
--- Matches "give me ID X's frames in this log, in time order" — used everywhere.
+-- Matches "give me ID X's frames in this log, in time order" - used everywhere.
 CREATE INDEX idx_can_frame_log_can_ts ON can_frame (log_id, can_id, ts);
 
 -- ---------------------------------------------------------------------------

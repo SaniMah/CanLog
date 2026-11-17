@@ -1,4 +1,4 @@
-"""Step 7 — generate the AI test report for a capture.
+"""Step 7 - generate the AI test report for a capture.
 
 Uses a local Ollama model if one is running, otherwise a deterministic template.
 Either way the report uses only the computed numbers and is labelled a draft.
@@ -27,7 +27,7 @@ def main(log_id: int = 2):
 
     print(f"Report source: {source}")
     if source == "template-fallback":
-        print("(Ollama not running — used the built-in template. Install Ollama and "
+        print("(Ollama not running - used the built-in template. Install Ollama and "
               "`ollama pull llama3.2` for LLM-written prose.)")
     print(f"Saved -> {out}\n")
     print("-" * 70)

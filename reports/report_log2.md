@@ -1,6 +1,6 @@
-# CAN Bus Test Report — DRAFT - review before use
+# CAN Bus Test Report - DRAFT - review before use
 
-**Capture:** 2_brakes_INJECTED_demo.log — Mazda CX-3 Maxx Sport (Brakes (injected faults - demo))  
+**Capture:** 2_brakes_INJECTED_demo.log - Mazda CX-3 Maxx Sport (Brakes (injected faults - demo))  
 *Clean brakes capture with 24 synthetic dropouts injected*
 
 ## Method

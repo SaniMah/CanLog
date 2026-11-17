@@ -1,4 +1,4 @@
-"""Step 5 — evaluation.
+"""Step 5 - evaluation.
 
 Inject known dropouts into the clean capture, run the detector, and measure
 precision / recall. Sweep the threshold k, compare the fixed rule against the

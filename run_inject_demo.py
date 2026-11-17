@@ -3,7 +3,7 @@ to show.
 
 Takes the clean capture (log 1), injects known dropouts, and stores the result
 as a NEW log_file (with its frames, profiles, and detected anomalies). This is
-clearly labelled as injected/demo data — it is not real fault data.
+clearly labelled as injected/demo data - it is not real fault data.
 
 Run:
     python run_inject_demo.py

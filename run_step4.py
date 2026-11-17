@@ -1,4 +1,4 @@
-"""Step 4 — detection.
+"""Step 4 - detection.
 
 Read a loaded capture back from the database, run the detection rules, write the
 anomalies to the `anomaly` table, and show that the dropout fix works: the naive
@@ -74,10 +74,10 @@ def main(log_id: int = 1):
         for r in rows:
             print(f"  {r.anomaly_type:<13} {r.n}")
     else:
-        print("  (none — this capture is clean; Step 5 injects faults to test)")
+        print("  (none - this capture is clean; Step 5 injects faults to test)")
 
     print("\nNote: baseline = this log's own IDs, so unknown/missing are 0 here; "
-          "they matter when comparing captures. The clean result is expected — "
+          "they matter when comparing captures. The clean result is expected - "
           "Step 5 injects known dropouts to measure precision/recall.")
 
 

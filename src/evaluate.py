@@ -1,9 +1,10 @@
 """Evaluation: inject known dropouts into a clean capture, then measure how well
 the detector finds them (precision / recall).
 
-Why inject? The brakes capture is clean — it has no real dropouts to score
-against. So we remove known windows of frames to create dropouts whose exact
-location we know (ground truth), run the detector, and compare.
+Why inject? The brakes capture is clean - it has no real dropouts to score
+against. Known windows of frames are removed to create dropouts whose exact
+location is known (ground truth), then the detector runs and the results
+are compared.
 
 Matching is by interval overlap: a detected gap counts as a true positive if it
 overlaps an injected window for the same CAN ID.

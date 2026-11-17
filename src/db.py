@@ -18,7 +18,7 @@ from sqlalchemy.engine import Engine
 
 load_dotenv()  # load variables from .env in the project root
 
-# Placeholder value shipped in .env.example — treat as "not configured".
+# Placeholder value shipped in .env.example - treat as "not configured".
 _PLACEHOLDER_PREFIX = "postgresql+psycopg2://user:password@host"
 
 
@@ -26,8 +26,8 @@ def _normalise_url(url: str) -> str:
     """Make a provider's URL usable by SQLAlchemy + psycopg2.
 
     Neon and Supabase hand out URLs starting ``postgresql://`` (or the older
-    ``postgres://``). SQLAlchemy needs the driver named, so we insert
-    ``+psycopg2``. Any query string (e.g. ``?sslmode=require``) is kept.
+    ``postgres://``). SQLAlchemy needs the driver named, so ``+psycopg2`` is
+    inserted. Any query string (e.g. ``?sslmode=require``) is kept.
     """
     for prefix in ("postgresql+psycopg2://", "postgresql+"):
         if url.startswith(prefix):
@@ -63,7 +63,7 @@ def init_schema(engine: Engine, schema_path: str | Path = "sql/schema.sql") -> N
     """Create all tables by running ``sql/schema.sql``.
 
     The script drops and recreates the tables, so this resets the database.
-    We use a raw psycopg2 connection because the script contains several
+    A raw psycopg2 connection is used because the script contains several
     statements separated by ``;`` (SQLAlchemy's ``text()`` expects one).
     """
     script = Path(schema_path).read_text(encoding="utf-8")

@@ -1,4 +1,4 @@
-"""Step 7 — AI test report.
+"""Step 7 - AI test report.
 
 Collect a capture's anomaly + validation numbers into a `facts` dict, then have
 a LOCAL LLM (Ollama) write a structured report that uses ONLY those numbers. If
@@ -163,9 +163,9 @@ def render_fallback(facts: dict) -> str:
     det, val = facts["detection"], facts.get("validation", {})
 
     lines = [
-        f"# CAN Bus Test Report — {DRAFT_BANNER}",
+        f"# CAN Bus Test Report - {DRAFT_BANNER}",
         "",
-        f"**Capture:** {cap['filename']} — {cap['vehicle']} ({cap['type']})  ",
+        f"**Capture:** {cap['filename']} - {cap['vehicle']} ({cap['type']})  ",
         f"*{cap['description']}*",
         "",
         "## Method",
@@ -178,7 +178,7 @@ def render_fallback(facts: dict) -> str:
         "## Results",
         f"- Total anomalies: **{an['total']}**"
         + (f" ({', '.join(f'{k}: {v}' for k, v in an['by_type'].items())})"
-           if an["by_type"] else " — none; this capture looks clean."),
+           if an["by_type"] else " - none; this capture looks clean."),
     ]
     if an["top_dropouts"]:
         lines.append("- Largest dropouts:")
@@ -208,7 +208,7 @@ def render_fallback(facts: dict) -> str:
         "## Conclusion",
         (f"The capture shows **{an['total']} dropout-type anomalies** that warrant "
          "investigation." if an["total"] else
-         "The capture is **clean** by these rules — no dropouts, drift, or "
+         "The capture is **clean** by these rules - no dropouts, drift, or "
          "unexpected IDs."),
         "",
         "## Next checks",

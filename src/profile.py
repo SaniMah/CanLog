@@ -1,8 +1,8 @@
 """Learn what 'normal' looks like for each CAN ID, and flag timing gaps.
 
-A healthy CAN ID is usually sent at a steady rate (e.g. every 10 ms). We learn
-that rate per ID, then flag any gap between consecutive frames that is much
-bigger than usual — a candidate *dropout*.
+A healthy CAN ID is usually sent at a steady rate (e.g. every 10 ms). The rate
+is learned per ID, then any gap between consecutive frames that is much
+bigger than usual - a candidate *dropout*.
 """
 from __future__ import annotations
 
@@ -20,6 +20,11 @@ def profile_ids(df: pd.DataFrame) -> pd.DataFrame:
     ``median_period`` is the typical seconds between frames (robust to the
     occasional big gap). ``period_iqr`` is how spread-out the timing is.
     """
+    cols = ["can_id", "count", "first_ts", "last_ts", "duration_s", "freq_hz",
+            "mean_period", "median_period", "period_iqr", "min_period", "max_period"]
+    if df.empty:
+        return pd.DataFrame(columns=cols)
+
     out: list[dict] = []
     for can_id, g in df.sort_values("timestamp").groupby("can_id"):
         ts = g["timestamp"].to_numpy()
@@ -65,7 +70,7 @@ def find_large_gaps(df: pd.DataFrame, k: float = 3.0, min_count: int = 10) -> pd
         Threshold multiplier. A gap counts as a dropout if it is more than
         ``k`` times that ID's median period. Start at 3; tuned in Step 5.
     min_count : int
-        Ignore IDs seen fewer than this many times — too few frames to have a
+        Ignore IDs seen fewer than this many times - too few frames to have a
         meaningful 'normal' rate.
 
     Returns one row per flagged gap:

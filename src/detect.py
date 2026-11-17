@@ -7,15 +7,15 @@ Anomaly types (matching the `anomaly.anomaly_type` CHECK constraint):
     missing_id    a known/baseline ID never appeared
 
 The dropout rule is the important one. A naive "gap > k * median" rule wrongly
-flags *bursty* IDs — e.g. CANdid ID 3D2, which normally alternates ~33 ms and
+flags *bursty* IDs - e.g. CANdid ID 3D2, which normally alternates ~33 ms and
 ~210 ms gaps, so 8% of its gaps are 6x the median yet perfectly normal. The fix:
 also require the gap to beat the ID's own normal worst-case wait (99th-percentile
-gap). We threshold on the MAX of the two terms, so:
+gap). The threshold is the MAX of the two terms, so:
     * steady IDs  -> the median term dominates (same as the simple rule);
     * bursty IDs  -> the p99 term lifts the bar above their routine big gaps.
 
 All detect_* functions take a frames DataFrame with columns `timestamp` and
-`can_id` and return a DataFrame with the ANOMALY_COLS below (no log_id — that is
+`can_id` and return a DataFrame with the ANOMALY_COLS below (no log_id - that is
 added by write_anomalies).
 """
 from __future__ import annotations
@@ -37,7 +37,7 @@ def detect_dropouts(
 ) -> pd.DataFrame:
     """Flag inter-frame gaps that are abnormally long for their ID.
 
-    threshold = k_med * median_period          (if use_p99 is False — naive rule)
+    threshold = k_med * median_period          (if use_p99 is False - naive rule)
     threshold = max(k_med * median, k_p99 * p99_period)   (if use_p99 is True)
 
     ``use_p99=False`` reproduces the original naive rule, used in Step 5 to show

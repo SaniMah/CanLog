@@ -1,4 +1,4 @@
-"""Step 2 — database.
+"""Step 2 - database.
 
 Create the schema in PostgreSQL (Neon) and bulk-load one CANdid capture:
 its log_file row, all CAN frames (via COPY), and the per-ID timing profiles.

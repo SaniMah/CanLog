@@ -1,4 +1,4 @@
-"""Step 3 — SQL analysis.
+"""Step 3 - SQL analysis.
 
 Run the saved queries in sql/analysis.sql against the loaded capture, print a
 few headline findings, and save two charts (bus rate over time, payload-size

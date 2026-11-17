@@ -1,5 +1,5 @@
 -- ============================================================================
--- CAN Log Analyser — saved analysis queries
+-- CAN Log Analyser - saved analysis queries
 -- ============================================================================
 -- Each query is tagged with "-- name: <id>" so run_step3.py can run them by
 -- name. They assume one capture is loaded as log_id = 1 (change as needed).
@@ -33,7 +33,7 @@ ORDER BY frame_count DESC
 LIMIT 10;
 
 -- name: rare_ids
--- The rarest IDs — few frames, often event-driven rather than periodic.
+-- The rarest IDs - few frames, often event-driven rather than periodic.
 SELECT can_id,
        frame_count,
        round(freq_hz::numeric, 3) AS freq_hz
@@ -61,7 +61,7 @@ ORDER BY gap_s DESC
 LIMIT 10;
 
 -- name: per_5s_rate
--- Total bus traffic in 5-second buckets — is the load steady over the capture?
+-- Total bus traffic in 5-second buckets - is the load steady over the capture?
 SELECT floor((ts - (SELECT min(ts) FROM can_frame WHERE log_id = 1)) / 5)::int AS bucket_5s,
        count(*) AS frames
 FROM can_frame
@@ -80,7 +80,7 @@ GROUP BY dlc
 ORDER BY dlc;
 
 -- name: constant_payload_ids
--- IDs whose 8-byte payload NEVER changes across the whole capture — likely
+-- IDs whose 8-byte payload NEVER changes across the whole capture - likely
 -- static status/config messages (a useful "normal" signature).
 SELECT can_id,
        count(*)              AS frames,
@@ -93,7 +93,7 @@ ORDER BY frames DESC
 LIMIT 10;
 
 -- name: most_variable_ids
--- The opposite: IDs whose payload changes the most — the "live" signals
+-- The opposite: IDs whose payload changes the most - the "live" signals
 -- (sensor values, wheel speeds, etc.).
 SELECT can_id,
        count(*)              AS frames,
